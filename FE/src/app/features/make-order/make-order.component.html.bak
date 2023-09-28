@@ -1,0 +1,70 @@
+<form class="master-form" [formGroup]="form" (ngSubmit)="onRegister()">
+    <div class="register__buttons">
+        <button mat-stroked-button type="button" (click)="onAdd()" >Add</button>
+        <button mat-stroked-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
+    </div>
+
+    
+    <div formArrayName="orderList" *ngFor="let order of formArray.controls; let i = index"> 
+        <div [formGroupName]="i">
+            <mat-form-field appearance="outline">
+                <mat-label>customerName</mat-label>
+                <input matInput formControlName="customerName">
+                <!-- <mat-error *ngIf="order.get('customerName')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>customerDob</mat-label>
+                <input matInput [matDatepicker]="customerDobPicker" formControlName="customerDob">
+                <mat-datepicker-toggle matSuffix [for]="customerDobPicker"></mat-datepicker-toggle>
+                <mat-datepicker #customerDobPicker></mat-datepicker>
+                <!-- <mat-error *ngIf="order.get('customerDob')?.hasError('required')">This field is required</mat-error> -->
+              </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>customerEmail</mat-label>
+                <input matInput formControlName="customerEmail">
+                <!-- <mat-error *ngIf="order.get('customerEmail')?.hasError('required')">This field is required</mat-error> -->
+                <!-- <mat-error *ngIf="order.get('customerEmail')?.hasError('email')">Please enter a valid email address</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>shopName</mat-label>
+                <input matInput formControlName="shopName">
+                <!-- <mat-error *ngIf="order.get('shopName')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>shopLocation</mat-label>
+                <input matInput formControlName="shopLocation">
+                <!-- <mat-error *ngIf="order.get('shopLocation')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>productName</mat-label>
+                <input matInput formControlName="productName">
+                <!-- <mat-error *ngIf="order.get('productName')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>productImage</mat-label>
+                <input matInput formControlName="productImage">
+                <!-- <mat-error *ngIf="order.get('productImage')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>price</mat-label>
+                <input matInput formControlName="price">
+                <!-- <mat-error *ngIf="order.get('price')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        
+            <mat-form-field appearance="outline">
+                <mat-label>quantity</mat-label>
+                <input matInput formControlName="quantity">
+                <!-- <mat-error *ngIf="order.get('quantity')?.hasError('required')">This field is required</mat-error> -->
+            </mat-form-field>
+        </div>
+    </div> 
+</form>
+<br/>
+<!-- {{ detail | async | json }} -->

@@ -1,0 +1,56 @@
+<!-- <form class="master-form" [formGroup]="form" (ngSubmit)="onRegister()"> -->
+<form class="master-form" [formGroup]="form">
+    <div class="register__buttons">
+        <button class="btn btn-outline-info" (click)="onAdd()" >Add</button>
+        <button class="btn btn-outline-primary" (click)="onRegister()" [disabled]="form.invalid">Submit</button>
+    </div>
+
+    
+    <div class="form-array" formArrayName="orderList" *ngFor="let order of formArray.controls; let i = index"> 
+        <div class="row mb-2" [formGroupName]="i">
+            <div class="col" style="width: 30px;">
+                <span>{{ i + 1 }}</span>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="customerName" placeholder="customerName">
+            </div>
+            <div class="col">
+                <input type="date" class="form-control" formControlName="customerDob" placeholder="customerDob">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="customerEmail" placeholder="customerEmail">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="shopName" placeholder="shopName">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="shopLocation" placeholder="shopLocation">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="productName" placeholder="productName">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="productImage" placeholder="productImage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="price" placeholder="price">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" formControlName="quantity" placeholder="quantity">
+            </div>
+        </div>
+    </div> 
+</form>
+<br/>
+<!-- {{ detail | async | json }} -->
+<ng-container #viewContainer/>
+
+<ng-template #template let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Error</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<span>{{ msg }}</span>
+	</div>
+</ng-template>
