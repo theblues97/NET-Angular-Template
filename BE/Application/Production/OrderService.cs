@@ -3,7 +3,6 @@ using Core.Model;
 using Core.Repositories;
 using Dal.SqLite.EF;
 using Microsoft.EntityFrameworkCore;
-using MockQueryable.FakeItEasy;
 
 namespace Application.Production;
 
@@ -65,7 +64,7 @@ public class OrderService : BaseService, IOrderService
                         Quantity = order.Quantity,
 
                     };
-        var listOrder = await query.ToListAsync();
+        var listOrder = query.ToList();
         var rs = new SuccessDataResponse<List<OrderDto>>(listOrder);
         return rs;
     }
@@ -82,9 +81,9 @@ public class OrderService : BaseService, IOrderService
                 var taskSaveShop = SaveShopByOrderList(orderList);
                 Task.WaitAll(taskSaveCustomer, taskSaveProduct, taskSaveShop);
 
-                var customers = await _customerRepository.GetQueryable().ToListAsync();
-                var products = await _productRepository.GetQueryable().ToListAsync();
-                var shops = await _shopRepository.GetQueryable().ToListAsync();
+                var customers = _customerRepository.GetQueryable().ToList();
+                var products = _productRepository.GetQueryable().ToList();
+                var shops = _shopRepository.GetQueryable().ToList();
 
                 await SaveShopProductByOrderList(orderList, products, shops);
 
@@ -184,7 +183,7 @@ public class OrderService : BaseService, IOrderService
         if (totalProductQuantity < 32768)
             throw new Exception("Total product < 32768");
 
-        var shopProducts = await _shopProductsRepository.GetQueryable().ToListAsync();
+        var shopProducts = _shopProductsRepository.GetQueryable().ToList();
 
         var query = from lOrder in orderList
                     join customer in customers

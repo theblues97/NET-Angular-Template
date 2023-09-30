@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.Moq;
 using Core.Repositories;
+using Dal.SqLite.EF;
 using Moq;
 
 namespace Project.Test;
@@ -25,13 +26,13 @@ public abstract class BaseServiceTest
 
 public static class MockRepositories
 {
-    public static void MockRepository<T>(this AutoMock autoMock, T returnObject) where T : class
+    public static void MockRepository<T>(this AutoMock autoMock) where T : class
     {
         autoMock.Mock<ICmdRepository<T>>()
-                .Setup(x => x.InsertAsync(It.IsAny<T>(), false)).ReturnsAsync(returnObject);
+                .Setup(x => x.InsertAsync(It.IsAny<T>(), false)).ReturnsAsync(Mock.Of<T>());
         autoMock.Mock<IQueryRepository<T>>()
             .Setup(x => x.GetCountAsync()).ReturnsAsync(1);
         autoMock.Mock<IRepository<T>>()
-            .Setup(x => x.InsertAsync(It.IsAny<T>(), false)).ReturnsAsync(returnObject);
+            .Setup(x => x.InsertAsync(It.IsAny<T>(), false)).ReturnsAsync(Mock.Of<T>());
     }
 }
