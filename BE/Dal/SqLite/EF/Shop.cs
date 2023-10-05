@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Context.Entity;
 
 namespace Dal.SqLite.EF
 {
-    public class Shop
+    public class Shop : BaseEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string? Location { get; set; }
     }

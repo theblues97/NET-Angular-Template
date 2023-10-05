@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dal.SqLite.Migrations
 {
-    [DbContext(typeof(SqLiteContext))]
+    [DbContext(typeof(MyContext))]
     [Migration("20230920123454_InitialCreate")]
     partial class InitialCreate
     {

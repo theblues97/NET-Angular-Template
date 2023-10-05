@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Core.Repositories;
 using Api.DI;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-//using Dal.InMemory.Context;
 using Dal.SqLite.Context;
+using Core.MultiTenancy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,25 +13,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Custom add
-// string mySqlConnection = builder.Configuration.GetConnectionString("MySQLConnection") ?? "";
-// builder.Services.AddDbContextPool<InMemoryContext>(opt =>
-// {
-//     opt.UseMySQL(mySqlConnection, mySqlOpt => { mySqlOpt.CommandTimeout(100); });
-//     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-// });
 
-//builder.Services.AddDbContext<InMemoryContext>(c => c.UseInMemoryDatabase("Test"));
-builder.Services.AddDbContext<SqLiteContext>();
+//Custom add
+builder.Services.AddDbContextPool<MyContext>((service, opt) =>
+{
+    var tenant = service.GetRequiredService<ITenantResolver>().GetCurrentTenant();
+    //opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    opt.UseSqlite(tenant.ConnectionString);
+});
 
 //AutoFac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(b => b.AutofacRegister());
-
-//builder.Services.AddTransient(typeof(ICmdRepository<>), typeof(Repository<>));
-//builder.Services.AddTransient(typeof(IQueryRepository<>), typeof(Repository<>));
-//builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

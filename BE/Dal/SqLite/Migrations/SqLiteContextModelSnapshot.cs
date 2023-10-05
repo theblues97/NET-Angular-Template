@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dal.SqLite.Migrations
 {
-    [DbContext(typeof(SqLiteContext))]
+    [DbContext(typeof(MyContext))]
     partial class SqLiteContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

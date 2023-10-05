@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Context.Entity;
 
 namespace Dal.SqLite.EF
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        public int Id { get; set; }
         public int CustomerId { get; set; }
         public int ShopProductId { get; set; }
         public int Quantity { get; set; }
