@@ -31,7 +31,7 @@
       <ProjectReference Include="..\Api\Api.csproj" />
       <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
-      <ProjectReference Include="..\Dal\Dal.csproj" />
+      <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

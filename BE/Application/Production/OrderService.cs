@@ -1,8 +1,7 @@
 ﻿using Core.Application;
 using Core.Model;
 using Core.Repositories;
-using Dal.SqLite.EF;
-using Microsoft.EntityFrameworkCore;
+using Domain.Entity;
 
 namespace Application.Production;
 

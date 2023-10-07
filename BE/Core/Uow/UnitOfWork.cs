@@ -1,5 +1,5 @@
-﻿using Core.DbContextProvider;
-using Core.DI;
+﻿using Core.Context;
+using Core.Dependency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -11,14 +11,15 @@ namespace Core.Uow
         Task SaveChangeAsync();
     }
     
-    public class UnitOfWork : IUnitOfWork, ITransientDependency, IDisposable
+    public class UnitOfWork<TContext> : IUnitOfWork, ITransientDependency, IDisposable
+        where TContext : DbContext
     {
         private readonly DbContext _dbContext;
         private bool _disposed;
 
-        public UnitOfWork(IContextManager contextManager)
+        public UnitOfWork(IDbContextProvider<TContext> dbContextProvider)
         {
-            _dbContext = contextManager.CurrentContext();
+            _dbContext = dbContextProvider.GetDbContext();
         }
 
         public IDbContextTransaction BeginTransaction()

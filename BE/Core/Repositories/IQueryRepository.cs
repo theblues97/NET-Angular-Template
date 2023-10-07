@@ -2,13 +2,13 @@
 
 namespace Core.Repositories
 {
-    public interface IQueryRepository<T> where T : class
+    public interface IQueryRepository<TEntity> where TEntity : class
     {
-        T? Find(Expression<Func<T, bool>> predicate);
-        Task<T?> FindAsync(Expression<Func<T, bool>> predicate);
-        IQueryable<T> GetQueryable();
-        Task<IEnumerable<T>> GetListAsync();
-        Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate);
+        TEntity? Find(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> GetQueryable();
+        Task<IEnumerable<TEntity>> GetListAsync();
+        Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
         Task<int> GetCountAsync();
     }
 }

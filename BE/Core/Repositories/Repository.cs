@@ -1,29 +1,29 @@
 ﻿using System.Linq.Expressions;
+using Core.Context;
 using Core.Context.Entity;
-using Core.DbContextProvider;
-using Core.DI;
+using Core.Dependency;
 using Core.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Repositories
 {
-    public interface IRepository<T> : IQueryRepository<T>, ICmdRepository<T> where T : BaseEntity
+    public interface IRepository<TEntity> : IQueryRepository<TEntity>, ICmdRepository<TEntity> 
+        where TEntity : BaseEntity
     {
     }
     
-    public class Repository<T> : IRepository<T>, IScopedDependency where T : BaseEntity
+    public class Repository<TEntity, TContext> : IRepository<TEntity>, ITransientDependency
+        where TEntity : BaseEntity
+        where TContext : DbContext
     {
         private readonly DbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
-        private readonly Tenant _tenant;
-        public Repository(IContextManager contextManager,
-            ITenantResolver tenantResolver)
+        private readonly DbSet<TEntity> _dbSet;
+        public Repository(IDbContextProvider<TContext> dbContextProvider)
         {
-            _dbContext = contextManager.CurrentContext();
-            _dbSet = _dbContext.Set<T>();
-            _tenant = tenantResolver.GetCurrentTenant();
+            _dbContext = dbContextProvider.GetDbContext();
+            _dbSet = _dbContext.Set<TEntity>();
         }
-        public T? Find(Expression<Func<T, bool>> predicate)
+        public TEntity? Find(Expression<Func<TEntity, bool>> predicate)
         {
             if (predicate == null)
             {
@@ -32,7 +32,7 @@ namespace Core.Repositories
             return _dbSet.Where(predicate).SingleOrDefault();
         }
 
-        public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate)
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
             if (predicate == null)
             {
@@ -46,24 +46,24 @@ namespace Core.Repositories
             return await _dbSet.CountAsync();
         }
 
-        public Task<IEnumerable<T>> GetListAsync()
+        public Task<IEnumerable<TEntity>> GetListAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate)
+        public Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<T> GetQueryable()
+        public IQueryable<TEntity> GetQueryable()
         {
             return _dbSet;
         }
         
-        public async Task<T> InsertAsync(T entity, bool autoSave = false)
+        public async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false)
         {
-            entity.TenantId = _tenant.TenantId;
+            //entity.TenantId = _tenant.TenantId;
             var rs = _dbSet.Add(entity).Entity;
 
             if (autoSave)
@@ -72,19 +72,19 @@ namespace Core.Repositories
             return rs;
         }
 
-        public async Task InsertRangeAsync(IEnumerable<T> entities, bool autoSave = false)
+        public async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false)
         {
-            foreach (var entry in entities)
-            {
-                entry.TenantId = _tenant.TenantId;
-            }
+            //foreach (var entry in entities)
+            //{
+            //    entry.TenantId = _tenant.TenantId;
+            //}
             await _dbSet.AddRangeAsync(entities);
 
             if(autoSave)
                 await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<T> UpdateAsync(T entity, bool autoSave = false)
+        public async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false)
         {
             var rs = _dbSet.Update(entity).Entity;
 
@@ -94,7 +94,7 @@ namespace Core.Repositories
             return rs;
         }
 
-        public async Task UpdateRangeAsync(IEnumerable<T> entities, bool autoSave = false)
+        public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false)
         {
             _dbSet.UpdateRange(entities);
 
@@ -102,7 +102,7 @@ namespace Core.Repositories
                 await _dbContext.SaveChangesAsync();
         }
         
-        public async Task DeleteAsync(T entity, bool autoSave = false)
+        public async Task DeleteAsync(TEntity entity, bool autoSave = false)
         {
             _dbSet.Remove(entity);
 
@@ -110,7 +110,7 @@ namespace Core.Repositories
                 await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteRangeAsync(IEnumerable<T> entities, bool autoSave = false)
+        public async Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false)
         {
             _dbSet.RemoveRange(entities);
 

@@ -1,0 +1,18 @@
+﻿using Domain.Entity;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Context
+{
+    public partial class AppDbContext : DbContext
+    {
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Shop> Shops { get; set; }
+        public DbSet<ShopProduct> ShopProducts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
+    }
+}

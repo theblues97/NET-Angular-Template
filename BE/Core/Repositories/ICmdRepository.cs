@@ -1,12 +1,12 @@
 ﻿namespace Core.Repositories
 {
-    public interface ICmdRepository<T> where T : class
+    public interface ICmdRepository<TEntity> where TEntity : class
     {
-        Task<T> InsertAsync(T entity, bool autoSave = false);
-        Task InsertRangeAsync(IEnumerable<T> entities, bool autoSave = false);
-        Task<T> UpdateAsync(T entity, bool autoSave = false);
-        Task UpdateRangeAsync(IEnumerable<T> entities, bool autoSave = false);
-        Task DeleteAsync(T entity, bool autoSave = false);
-        Task DeleteRangeAsync(IEnumerable<T> entities, bool autoSave = false);
+        Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false);
+        Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false);
+        Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false);
+        Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false);
+        Task DeleteAsync(TEntity entity, bool autoSave = false);
+        Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false);
     }
 }

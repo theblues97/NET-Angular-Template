@@ -1,14 +1,12 @@
-﻿using Core.DI;
+﻿using Core.Dependency;
+using Core.MultiTenancy;
 using Core.Uow;
 
 namespace Core.Application;
 
-public abstract class BaseService: ITransientDependency
+public abstract class BaseService : ITransientDependency
 {
     public IUnitOfWork UnitOfWork { get; set; }
 
-    //public BaseService(IUnitOfWork unitOfWork)
-    //{
-    //    UnitOfWork = unitOfWork;
-    //}
+    //public ICurrentTenant CurrentTenant { get; set; }
 }

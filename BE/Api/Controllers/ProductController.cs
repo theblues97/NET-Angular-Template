@@ -1,5 +1,4 @@
 using Application.Production;
-using Dal.SqLite.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
