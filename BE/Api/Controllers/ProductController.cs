@@ -1,4 +1,4 @@
-using Application.Production;
+using Application.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers

@@ -3,12 +3,13 @@ using Core.Model;
 using Core.Repositories;
 using Domain.Entity;
 
-namespace Application.Production;
+namespace Application.Products;
 
 public interface IOrderService
 {
     Task<BaseDataResponseModel<List<OrderDto>>> GetOrder();
     Task<BaseResponseModel> SaveOrder(List<OrderDto> orderList);
+    Task<BaseDataResponseModel<Shop>> SaveShop(Shop shop);
 }
 
 public class OrderService : BaseService, IOrderService
@@ -66,6 +67,19 @@ public class OrderService : BaseService, IOrderService
         var listOrder = query.ToList();
         var rs = new SuccessDataResponse<List<OrderDto>>(listOrder);
         return rs;
+    }
+
+    public async Task<BaseDataResponseModel<Shop>> SaveShop(Shop shop)
+    {
+        try
+        {
+            var data = await _shopRepository.InsertAsync(shop);
+            return new SuccessDataResponse<Shop>(data);
+        }
+        catch (Exception ex)
+        {
+            return new ErrorDataResponse<Shop>(ex.Message);
+        }
     }
 
     public async Task<BaseResponseModel> SaveOrder(List<OrderDto> orderList)

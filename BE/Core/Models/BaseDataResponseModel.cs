@@ -48,4 +48,13 @@ namespace Core.Model
             Message = errMsg;
         }
     }
+
+    public class ErrorDataResponse<T> : BaseDataResponseModel<T> where T : class
+    {
+        public ErrorDataResponse(string errMsg)
+        {
+            Status = Status.Error;
+            Message = errMsg;
+        }
+    }
 }

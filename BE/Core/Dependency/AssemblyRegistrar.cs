@@ -46,7 +46,7 @@ namespace Core.Dependency
             return moduleTypes;
         }
 
-        private static void GenericRepositoryRegistrar(this ContainerBuilder builder, Type moduleType)
+        public static void GenericRepositoryRegistrar(this ContainerBuilder builder, Type moduleType)
         {
             List<Type> reposityTypes = new();
 

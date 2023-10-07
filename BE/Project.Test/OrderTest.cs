@@ -1,7 +1,6 @@
-using Application.Production;
-using Autofac;
+using Application.Products;
 using Autofac.Extras.Moq;
-using Core.Model;
+using Core.Application;
 using Domain.Entity;
 
 namespace Project.Test;
@@ -17,6 +16,22 @@ public class OrderTest : BaseTestService
             var mockOrderService = AutoMock.Create<OrderService>();
 
             var actual = await mockOrderService.GetOrder();
+            Assert.NotEmpty(actual.Data);
+        }
+    }
+
+    [Fact]
+    public async void TestAddShop()
+    {
+        using (AutoMock)
+        {
+            var mockOrderService = AutoMock.Create<OrderService>();
+
+            var actual = await mockOrderService.SaveShop(new Shop()
+            {
+                Name = "Test",
+                Location = "Tect Location"
+            });
             Assert.NotNull(actual.Data);
         }
     }

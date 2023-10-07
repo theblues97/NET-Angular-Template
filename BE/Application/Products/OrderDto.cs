@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Core.Utilities;
 
-namespace Application.Production
+namespace Application.Products
 {
     public class OrderDto
     {
