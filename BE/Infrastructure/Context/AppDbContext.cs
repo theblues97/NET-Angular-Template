@@ -5,10 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Context
 {
 
-    public interface IIdentityDbContext
-    {
-    }
-    public partial class AppDbContext : DbContext, IIdentityDbContext
+    public partial class AppDbContext : DbContext
 	{
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
