@@ -2,6 +2,7 @@
 using Core.Dependency;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Core.Utilities.Dependency
 {
@@ -34,10 +35,11 @@ namespace Core.Utilities.Dependency
         public static void AutofacRegisterBuilder<TDependencyLifeTime>(this ContainerBuilder builder, Assembly assembly)
             where TDependencyLifeTime : class
         {
-            var implement = builder.RegisterAssemblyTypes(assembly)
+
+			var implement = builder.RegisterAssemblyTypes(assembly)
                 .Where(t => t.GetInterfaces().Any(i => i.IsAssignableFrom(typeof(TDependencyLifeTime))))
-                .PropertiesAutowired((pros, ins)
-                    => pros.PropertyType.GetInterfaces().Any(i => i.IsAssignableFrom(typeof(IPropertyInjection))))
+                .PropertiesAutowired((propertyInfo, instance)
+                    => propertyInfo.GetCustomAttribute<PropertyDependence>() != null)
                 .AsImplementedInterfaces();
 
             switch (typeof(TDependencyLifeTime))
@@ -57,14 +59,30 @@ namespace Core.Utilities.Dependency
             }
         }
 
-        public static void AutofacRepositoryRegisterBuilder(this ContainerBuilder builder, Type repositoryType)
-        {
-            builder.RegisterType(repositoryType)
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
-        }
+        public static void AutofacTypeRegisterBuilder<TDependencyLifeTime>(this ContainerBuilder builder, Type type)
+			where TDependencyLifeTime : class
+		{
+            var implement = builder.RegisterType(type)
+                .AsImplementedInterfaces();
 
-        public static IEnumerable<EntityTypeInfo> GetEntityTypeInfos(Type dbContextType)
+			switch (typeof(TDependencyLifeTime))
+			{
+				case ITransientDependency:
+					implement.InstancePerDependency();
+					break;
+				case IScopedDependency:
+					implement.InstancePerLifetimeScope();
+					break;
+				case ISingletonDependency:
+					implement.SingleInstance();
+					break;
+				default:
+					implement.InstancePerDependency();
+					break;
+			}
+		}
+
+        public static IEnumerable<EntityTypeInfo> GetEntityTypeInfos(this Type dbContextType)
         {
             return from property in dbContextType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                    where IsAssignableToGenericType(property.PropertyType, typeof(DbSet<>))

@@ -9,13 +9,13 @@ public class OrderTest : BaseTestService
 {
 
     [Fact]
-    public async void TestGetOrder()
+    public async void TestGetShops()
     {
         using (AutoMock)
         {
             var mockOrderService = AutoMock.Create<OrderService>();
 
-            var actual = await mockOrderService.GetOrder();
+            var actual = await mockOrderService.GetShops();
             Assert.NotEmpty(actual.Data);
         }
     }

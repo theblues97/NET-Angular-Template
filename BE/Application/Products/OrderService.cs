@@ -1,13 +1,18 @@
 ﻿using Core.Application;
 using Core.Model;
 using Core.Repositories;
+using Core.Uow;
 using Domain.Entity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Products;
 
 public interface IOrderService
 {
-    Task<BaseDataResponseModel<List<OrderDto>>> GetOrder();
+    Task<BaseDataResponseModel<IEnumerable<ShopDto>>> GetShops();
+
+	Task<BaseDataResponseModel<List<OrderDto>>> GetOrder();
     Task<BaseResponseModel> SaveOrder(List<OrderDto> orderList);
     Task<BaseDataResponseModel<Shop>> SaveShop(Shop shop);
 }
@@ -34,9 +39,20 @@ public class OrderService : BaseService, IOrderService
         _orderRepository = orderRepository;
     }
 
+    public async Task<BaseDataResponseModel<IEnumerable<ShopDto>>> GetShops()
+    {
+        var data = await _shopRepository.GetQueryable()
+                .Select(x => new ShopDto()
+                {
+                    Name = x.Name,
+                    Location = x.Location ?? ""
+                }).ToListAsync();
+        return new SuccessDataResponse<IEnumerable<ShopDto>>(data);
+    }
+
     public async Task<BaseDataResponseModel<List<OrderDto>>> GetOrder()
     {
-        var query = from customer in _customerRepository.GetQueryable()
+		var query = from customer in _customerRepository.GetQueryable()
                     from shop in _shopRepository.GetQueryable()
                     join shopProd in _shopProductsRepository.GetQueryable()
                         on shop.Id equals shopProd.ShopId

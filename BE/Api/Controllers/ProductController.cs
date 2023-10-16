@@ -13,8 +13,16 @@ namespace api.Controllers
         {
             _orderService = orderService;
         }
-        
-        [HttpGet]
+
+		[HttpGet]
+		[Route("GetShops")]
+		public async Task<IActionResult> GetShops(string? tenantId = null)
+		{
+			var rs = await _orderService.GetShops();
+			return Ok(rs);
+		}
+
+		[HttpGet]
         [Route("GetOrder")]
         public async Task<IActionResult> GetOrder()
         {

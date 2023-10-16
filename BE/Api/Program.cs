@@ -3,6 +3,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Core.Dependency;
 using Infrastructure.Context;
+using Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Core.MultiTenancy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,23 +17,17 @@ builder.Services.AddSwaggerGen();
 
 
 //Custom add
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContextPool<AppDbContext>((service, opt) =>
 {
-    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+    //TODO: add db provider to optinal
+	var tenant = service.GetRequiredService<ITenantResolver>().GetCurrentTenant();
 
-    if (baseDir.Contains("bin"))
-    {
-        int index = baseDir.IndexOf("bin");
-        baseDir = baseDir.Substring(0, index);
-        baseDir = Directory.GetParent(baseDir)?.Parent?.FullName ?? "";
-    }
-
-    var DbPath = $"Data Source={Path.Join(baseDir, "product.db")}";
-    opt.UseSqlite(DbPath);
-    //var tenant = service.GetRequiredService<ITenantResolver>().GetCurrentTenant();
-    //opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    //opt.UseSqlite(tenant.ConnectionString);
+	opt.UseSqlServer(tenant.ConnectionString, option => option.CommandTimeout(100));
 });
+
+//builder.Services.AddScoped<AppDbContextFactory>();
+//builder.Services.AddScoped(sp => sp.GetRequiredService<AppDbContextFactory>().CreateDbContext());
 
 //AutoFac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());

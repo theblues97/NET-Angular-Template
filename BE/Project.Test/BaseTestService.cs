@@ -4,32 +4,40 @@ using Core.Context;
 using Core.Dependency;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Context;
+using Autofac.Core;
+using Core.MultiTenancy;
+using Microsoft.Extensions.Configuration;
 
 namespace Core.Application;
 
 public abstract class BaseTestService
 {
+    private AutoMock _autoMock;
 
     public BaseTestService()
     {
+        _autoMock = AutoMock.GetLoose(ServiceRegistrar);
+
     }
 
     private void ServiceRegistrar(ContainerBuilder cb)
     {
         var moduleType = AssemblyRegistrar.GetListTypeModule();
 
-        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
-        if (baseDir.Contains("bin"))
-        {
-            int index = baseDir.IndexOf("bin");
-            baseDir = baseDir.Substring(0, index);
-            baseDir = Directory.GetParent(baseDir)?.Parent?.FullName ?? "";
-        }
-        var DbPath = $"Data Source={Path.Join(baseDir, "product.db")}";
+        // Build config
+        IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../../../Api"))
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        var connectionString = config.GetSection("TenantOptions")["DefaultConnection"];
 
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(DbPath)
+            .UseSqlServer(connectionString)
             .Options;
 
         cb.RegisterType<AppDbContext>()
@@ -54,5 +62,5 @@ public abstract class BaseTestService
         });
     }
 
-    protected AutoMock AutoMock => AutoMock.GetLoose(ServiceRegistrar);
+    protected AutoMock AutoMock => _autoMock;
 }

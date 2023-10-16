@@ -12,7 +12,7 @@ namespace Core.Repositories
     {
     }
     
-    public class Repository<TEntity, TContext> : IRepository<TEntity>, ITransientDependency
+    public class Repository<TEntity, TContext> : IRepository<TEntity>, IScopedDependency
         where TEntity : BaseEntity
         where TContext : DbContext
     {
@@ -74,10 +74,6 @@ namespace Core.Repositories
 
         public async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false)
         {
-            //foreach (var entry in entities)
-            //{
-            //    entry.TenantId = _tenant.TenantId;
-            //}
             await _dbSet.AddRangeAsync(entities);
 
             if(autoSave)

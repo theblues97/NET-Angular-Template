@@ -5,6 +5,8 @@ using Autofac.Diagnostics;
 using Core.Utilities.Dependency;
 using Core.Repositories;
 using Microsoft.EntityFrameworkCore;
+using static Core.Utilities.Dependency.DependencyHelper;
+using Core.Uow;
 
 namespace Core.Dependency
 {
@@ -48,22 +50,23 @@ namespace Core.Dependency
 
         public static void GenericRepositoryRegistrar(this ContainerBuilder builder, Type moduleType)
         {
-            List<Type> reposityTypes = new();
-
             var dbContextTypes = moduleType.Assembly
                 .GetTypes()
-                .Where(type => type.IsPublic &&
+                .Where(type => type.IsPublic && !type.IsAbstract &&
                         type.IsClass &&
                         typeof(DbContext).IsAssignableFrom(type));
 
             foreach (var dbtType in dbContextTypes)
             {
-                var entityTypeInfos = DependencyHelper.GetEntityTypeInfos(dbtType);
+                var entityTypeInfos = dbtType.GetEntityTypeInfos();
                 foreach (var entityTypeInfo in entityTypeInfos)
                 {
                     var repositoryType = typeof(Repository<,>).MakeGenericType(entityTypeInfo.EntityType, entityTypeInfo.DeclaringType);
-                    builder.AutofacRepositoryRegisterBuilder(repositoryType);
-                }
+                    builder.AutofacTypeRegisterBuilder<IScopedDependency>(repositoryType);
+				}
+
+                var uowType = typeof(UnitOfWork<>).MakeGenericType(dbtType);
+                builder.AutofacTypeRegisterBuilder<IScopedDependency>(uowType);
             } 
         }
 
@@ -73,10 +76,11 @@ namespace Core.Dependency
                 .GetTypes()
                 .ToList();
 
-            foreach (var dependent in depedents)
-            {
-                builder.ModuleDependencyRegister(dependent.Assembly);
-            }
+			builder.ModuleDependencyRegister(moduleType.Assembly);
+			//foreach (var dependent in depedents)
+   //         {
+                
+   //         }
         }
 
         private static void ModuleDependencyRegister(this ContainerBuilder builder, Assembly assembly)
