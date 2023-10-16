@@ -2,10 +2,8 @@
 using Autofac.Extras.Moq;
 using Core.Context;
 using Core.Dependency;
-using Microsoft.EntityFrameworkCore;
 using Infrastructure.Context;
-using Autofac.Core;
-using Core.MultiTenancy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Core.Application;

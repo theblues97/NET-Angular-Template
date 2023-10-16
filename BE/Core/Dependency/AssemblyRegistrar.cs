@@ -77,10 +77,6 @@ namespace Core.Dependency
                 .ToList();
 
 			builder.ModuleDependencyRegister(moduleType.Assembly);
-			//foreach (var dependent in depedents)
-   //         {
-                
-   //         }
         }
 
         private static void ModuleDependencyRegister(this ContainerBuilder builder, Assembly assembly)

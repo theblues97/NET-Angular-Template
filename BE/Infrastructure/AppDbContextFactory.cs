@@ -6,39 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure
 {
-	//public class AppDbContextFactory : IDbContextFactory<AppDbContext>
-	//{
-	//	private readonly IConfiguration _configuration;
-	//	private readonly ICurrentTenant _currentTenant;
-
-	//	public AppDbContextFactory() { }
-	//	//public AppDbContextFactory(
-	//	//	IConfiguration configuration,
-	//	//	ICurrentTenant currentTenant)
-	//	//{
-	//	//	_configuration = configuration;
-	//	//	_currentTenant = currentTenant;
-	//	//}
-	//	public AppDbContext CreateDbContext()
-	//	{
-	//		string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-
-	//		if (baseDir.Contains("bin"))
-	//		{
-	//			int index = baseDir.IndexOf("bin");
-	//			baseDir = baseDir.Substring(0, index);
-	//			baseDir = Directory.GetParent(baseDir)?.Parent?.FullName ?? "";
-	//		}
-
-	//		var DbPath = $"Data Source={Path.Join(baseDir, "product.db")}";
-
-	//		var builder = new DbContextOptionsBuilder<AppDbContext>()
-	//		.UseSqlite(DbPath);
-	//		return new AppDbContext(builder.Options);
-	//	}
-	//}
-
-	public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 	{
 
 		public AppDbContext CreateDbContext(string[] args)
